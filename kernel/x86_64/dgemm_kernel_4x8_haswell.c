@@ -116,10 +116,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *******************************************************************************************/
 
 
-static inline __m256d _mm256_blend_pd_gnu(__m256d A, __m256d B, int i)
-{ 
-	return _mm256_blend_pd(B,A, i);
-}
+#define  _mm256_blend_pd_gnu(A, B, i) _mm256_blend_pd(B,A, i)
+
 
 static void print_ymm(char *str, __m256d ymm)
 {
@@ -285,6 +283,7 @@ static void print_ymm(char *str, __m256d ymm)
 
 
 #define  SAVE4x12(ALPHA)				\
+	if (ALPHA != 1.0) {				\
 	ymm0 = _mm256_set1_pd(ALPHA);			\
 	ymm4 *= ymm0;					\
 	ymm5 *= ymm0;					\
@@ -298,6 +297,7 @@ static void print_ymm(char *str, __m256d ymm)
 	ymm13 *= ymm0;					\
 	ymm14 *= ymm0;					\
 	ymm15 *= ymm0;					\
+	}						\
 							\
 	ymm5  = _mm256_permute4x64_pd(ymm5, 0xb1);		\
 	ymm7  = _mm256_permute4x64_pd(ymm7, 0xb1);		\
@@ -317,14 +317,14 @@ static void print_ymm(char *str, __m256d ymm)
 	ymm6  = _mm256_blend_pd_gnu(ymm2, ymm0, 0x03);	\
 	ymm7  = _mm256_blend_pd_gnu(ymm3, ymm1, 0x03);	\
 							\
-	ymm4 += _mm256_loadu_pd(CO1 + (0 * LDC)/8);	\
-	ymm5 += _mm256_loadu_pd(CO1 + (1 * LDC)/8);	\
-	ymm6 += _mm256_loadu_pd(CO1 + (2 * LDC)/8);	\
-	ymm7 += _mm256_loadu_pd(CO1 + (3 * LDC)/8);	\
-	_mm256_storeu_pd(CO1 + (0 * LDC)/8, ymm4);	\
-	_mm256_storeu_pd(CO1 + (1 * LDC)/8, ymm5);	\
-	_mm256_storeu_pd(CO1 + (2 * LDC)/8, ymm6);	\
-	_mm256_storeu_pd(CO1 + (3 * LDC)/8, ymm7);	\
+	ymm4 += _mm256_loadu_pd(CO1 + (0 * ldc));	\
+	ymm5 += _mm256_loadu_pd(CO1 + (1 * ldc));	\
+	ymm6 += _mm256_loadu_pd(CO1 + (2 * ldc));	\
+	ymm7 += _mm256_loadu_pd(CO1 + (3 * ldc));	\
+	_mm256_storeu_pd(CO1 + (0 * ldc), ymm4);	\
+	_mm256_storeu_pd(CO1 + (1 * ldc), ymm5);	\
+	_mm256_storeu_pd(CO1 + (2 * ldc), ymm6);	\
+	_mm256_storeu_pd(CO1 + (3 * ldc), ymm7);	\
 							\
 	ymm9  = _mm256_permute4x64_pd(ymm9, 0xb1);		\
 	ymm11 = _mm256_permute4x64_pd(ymm11, 0xb1);		\
@@ -344,14 +344,14 @@ static void print_ymm(char *str, __m256d ymm)
 	ymm6  = _mm256_blend_pd_gnu(ymm2, ymm0, 0x03);	\
 	ymm7  = _mm256_blend_pd_gnu(ymm3, ymm1, 0x03);	\
 							\
-	ymm4 += _mm256_loadu_pd(CO1 + (4 * LDC)/8);	\
-	ymm5 += _mm256_loadu_pd(CO1 + (5 * LDC)/8);	\
-	ymm6 += _mm256_loadu_pd(CO1 + (6 * LDC)/8);	\
-	ymm7 += _mm256_loadu_pd(CO1 + (7 * LDC)/8);	\
-	_mm256_storeu_pd(CO1 + (4 * LDC)/8, ymm4);	\
-	_mm256_storeu_pd(CO1 + (5 * LDC)/8, ymm5);	\
-	_mm256_storeu_pd(CO1 + (6 * LDC)/8, ymm6);	\
-	_mm256_storeu_pd(CO1 + (7 * LDC)/8, ymm7);	\
+	ymm4 += _mm256_loadu_pd(CO1 + (4 * ldc));	\
+	ymm5 += _mm256_loadu_pd(CO1 + (5 * ldc));	\
+	ymm6 += _mm256_loadu_pd(CO1 + (6 * ldc));	\
+	ymm7 += _mm256_loadu_pd(CO1 + (7 * ldc));	\
+	_mm256_storeu_pd(CO1 + (4 * ldc), ymm4);	\
+	_mm256_storeu_pd(CO1 + (5 * ldc), ymm5);	\
+	_mm256_storeu_pd(CO1 + (6 * ldc), ymm6);	\
+	_mm256_storeu_pd(CO1 + (7 * ldc), ymm7);	\
 							\
 	ymm13 = _mm256_permute4x64_pd(ymm13, 0xb1);		\
 	ymm15 = _mm256_permute4x64_pd(ymm15, 0xb1);		\
@@ -371,14 +371,14 @@ static void print_ymm(char *str, __m256d ymm)
 	ymm6  = _mm256_blend_pd_gnu(ymm2, ymm0, 0x03);	\
 	ymm7  = _mm256_blend_pd_gnu(ymm3, ymm1, 0x03);	\
 							\
-	ymm4 += _mm256_loadu_pd(CO1 + (8 * LDC)/8);	\
-	ymm5 += _mm256_loadu_pd(CO1 + (9 * LDC)/8);	\
-	ymm6 += _mm256_loadu_pd(CO1 + (10 * LDC)/8);	\
-	ymm7 += _mm256_loadu_pd(CO1 + (11 * LDC)/8);	\
-	_mm256_storeu_pd(CO1 + (8 * LDC)/8, ymm4);	\
-	_mm256_storeu_pd(CO1 + (9 * LDC)/8, ymm5);	\
-	_mm256_storeu_pd(CO1 + (10 * LDC)/8, ymm6);	\
-	_mm256_storeu_pd(CO1 + (11 * LDC)/8, ymm7);	\
+	ymm4 += _mm256_loadu_pd(CO1 + (8 * ldc));	\
+	ymm5 += _mm256_loadu_pd(CO1 + (9 * ldc));	\
+	ymm6 += _mm256_loadu_pd(CO1 + (10 * ldc));	\
+	ymm7 += _mm256_loadu_pd(CO1 + (11 * ldc));	\
+	_mm256_storeu_pd(CO1 + (8 * ldc), ymm4);	\
+	_mm256_storeu_pd(CO1 + (9 * ldc), ymm5);	\
+	_mm256_storeu_pd(CO1 + (10 * ldc), ymm6);	\
+	_mm256_storeu_pd(CO1 + (11 * ldc), ymm7);	\
 							\
 	CO1 += 4;
 
@@ -447,35 +447,35 @@ static void print_ymm(char *str, __m256d ymm)
 	xmm14 *= xmm0;					\
 	xmm15 *= xmm0;					\
 							\
-	xmm4 += _mm_loadu_pd(CO1 + (0 * LDC)/8);	\
-	xmm5 += _mm_loadu_pd(CO1 + (1 * LDC)/8);	\
-	xmm6 += _mm_loadu_pd(CO1 + (2 * LDC)/8);	\
-	xmm7 += _mm_loadu_pd(CO1 + (3 * LDC)/8);	\
+	xmm4 += _mm_loadu_pd(CO1 + (0 * ldc));	\
+	xmm5 += _mm_loadu_pd(CO1 + (1 * ldc));	\
+	xmm6 += _mm_loadu_pd(CO1 + (2 * ldc));	\
+	xmm7 += _mm_loadu_pd(CO1 + (3 * ldc));	\
 							\
-	_mm_storeu_pd(CO1 + (0 * LDC)/8, xmm4);		\
-	_mm_storeu_pd(CO1 + (1 * LDC)/8, xmm5);		\
-	_mm_storeu_pd(CO1 + (2 * LDC)/8, xmm6);		\
-	_mm_storeu_pd(CO1 + (3 * LDC)/8, xmm7);		\
+	_mm_storeu_pd(CO1 + (0 * ldc), xmm4);		\
+	_mm_storeu_pd(CO1 + (1 * ldc), xmm5);		\
+	_mm_storeu_pd(CO1 + (2 * ldc), xmm6);		\
+	_mm_storeu_pd(CO1 + (3 * ldc), xmm7);		\
 							\
-	xmm8 += _mm_loadu_pd(CO1 + (4 * LDC)/8);	\
-	xmm9 += _mm_loadu_pd(CO1 + (5 * LDC)/8);	\
-	xmm10+= _mm_loadu_pd(CO1 + (6 * LDC)/8);	\
-	xmm11+= _mm_loadu_pd(CO1 + (7 * LDC)/8);	\
+	xmm8 += _mm_loadu_pd(CO1 + (4 * ldc));	\
+	xmm9 += _mm_loadu_pd(CO1 + (5 * ldc));	\
+	xmm10+= _mm_loadu_pd(CO1 + (6 * ldc));	\
+	xmm11+= _mm_loadu_pd(CO1 + (7 * ldc));	\
 							\
-	_mm_storeu_pd(CO1 + (4 * LDC)/8, xmm8);		\
-	_mm_storeu_pd(CO1 + (5 * LDC)/8, xmm9);		\
-	_mm_storeu_pd(CO1 + (6 * LDC)/8, xmm10);	\
-	_mm_storeu_pd(CO1 + (7 * LDC)/8, xmm11);	\
+	_mm_storeu_pd(CO1 + (4 * ldc), xmm8);		\
+	_mm_storeu_pd(CO1 + (5 * ldc), xmm9);		\
+	_mm_storeu_pd(CO1 + (6 * ldc), xmm10);	\
+	_mm_storeu_pd(CO1 + (7 * ldc), xmm11);	\
 							\
-	xmm12 += _mm_loadu_pd(CO1 + ( 8 * LDC)/8);	\
-	xmm13 += _mm_loadu_pd(CO1 + ( 9 * LDC)/8);	\
-	xmm14 += _mm_loadu_pd(CO1 + (10 * LDC)/8);	\
-	xmm15 += _mm_loadu_pd(CO1 + (11 * LDC)/8);	\
+	xmm12 += _mm_loadu_pd(CO1 + ( 8 * ldc));	\
+	xmm13 += _mm_loadu_pd(CO1 + ( 9 * ldc));	\
+	xmm14 += _mm_loadu_pd(CO1 + (10 * ldc));	\
+	xmm15 += _mm_loadu_pd(CO1 + (11 * ldc));	\
 							\
-	_mm_storeu_pd(CO1 + ( 8 * LDC)/8, xmm12);	\
-	_mm_storeu_pd(CO1 + ( 9 * LDC)/8, xmm13);	\
-	_mm_storeu_pd(CO1 + (10 * LDC)/8, xmm14);	\
-	_mm_storeu_pd(CO1 + (11 * LDC)/8, xmm15);	\
+	_mm_storeu_pd(CO1 + ( 8 * ldc), xmm12);	\
+	_mm_storeu_pd(CO1 + ( 9 * ldc), xmm13);	\
+	_mm_storeu_pd(CO1 + (10 * ldc), xmm14);	\
+	_mm_storeu_pd(CO1 + (11 * ldc), xmm15);	\
 	CO1 += 2;
 
 
@@ -541,32 +541,32 @@ static void print_ymm(char *str, __m256d ymm)
 	dbl14 *= dbl0;				\
 	dbl15 *= dbl0;				\
 						\
-	dbl4 += *(CO1 + (0 * LDC)/8);		\
-	dbl5 += *(CO1 + (1 * LDC)/8);		\
-	dbl6 += *(CO1 + (2 * LDC)/8);		\
-	dbl7 += *(CO1 + (3 * LDC)/8);		\
-	*(CO1 + (0 * LDC)/8) = dbl4;		\
-	*(CO1 + (1 * LDC)/8) = dbl5;		\
-	*(CO1 + (2 * LDC)/8) = dbl6;		\
-	*(CO1 + (3 * LDC)/8) = dbl7;		\
+	dbl4 += *(CO1 + (0 * ldc));		\
+	dbl5 += *(CO1 + (1 * ldc));		\
+	dbl6 += *(CO1 + (2 * ldc));		\
+	dbl7 += *(CO1 + (3 * ldc));		\
+	*(CO1 + (0 * ldc)) = dbl4;		\
+	*(CO1 + (1 * ldc)) = dbl5;		\
+	*(CO1 + (2 * ldc)) = dbl6;		\
+	*(CO1 + (3 * ldc)) = dbl7;		\
 						\
-	dbl8  += *(CO1 + (4 * LDC)/8);		\
-	dbl9  += *(CO1 + (5 * LDC)/8);		\
-	dbl10 += *(CO1 + (6 * LDC)/8);		\
-	dbl11 += *(CO1 + (7 * LDC)/8);		\
-	*(CO1 + (4 * LDC)/8) = dbl8;		\
-	*(CO1 + (5 * LDC)/8) = dbl9;		\
-	*(CO1 + (6 * LDC)/8) = dbl10;		\
-	*(CO1 + (7 * LDC)/8) = dbl11;		\
+	dbl8  += *(CO1 + (4 * ldc));		\
+	dbl9  += *(CO1 + (5 * ldc));		\
+	dbl10 += *(CO1 + (6 * ldc));		\
+	dbl11 += *(CO1 + (7 * ldc));		\
+	*(CO1 + (4 * ldc)) = dbl8;		\
+	*(CO1 + (5 * ldc)) = dbl9;		\
+	*(CO1 + (6 * ldc)) = dbl10;		\
+	*(CO1 + (7 * ldc)) = dbl11;		\
 						\
-	dbl12 += *(CO1 + ( 8 * LDC)/8);		\
-	dbl13 += *(CO1 + ( 9 * LDC)/8);		\
-	dbl14 += *(CO1 + (10 * LDC)/8);		\
-	dbl15 += *(CO1 + (11 * LDC)/8);		\
-	*(CO1 + ( 8 * LDC)/8) = dbl12;		\
-	*(CO1 + ( 9 * LDC)/8) = dbl13;		\
-	*(CO1 + (10 * LDC)/8) = dbl14;		\
-	*(CO1 + (11 * LDC)/8) = dbl15;		\
+	dbl12 += *(CO1 + ( 8 * ldc));		\
+	dbl13 += *(CO1 + ( 9 * ldc));		\
+	dbl14 += *(CO1 + (10 * ldc));		\
+	dbl15 += *(CO1 + (11 * ldc));		\
+	*(CO1 + ( 8 * ldc)) = dbl12;		\
+	*(CO1 + ( 9 * ldc)) = dbl13;		\
+	*(CO1 + (10 * ldc)) = dbl14;		\
+	*(CO1 + (11 * ldc)) = dbl15;		\
 						\
 	CO1 += 1;
 
@@ -732,14 +732,14 @@ static void print_ymm(char *str, __m256d ymm)
 	ymm6 = _mm256_blend_pd_gnu(ymm2, ymm0, 0x03);	\
 	ymm7 = _mm256_blend_pd_gnu(ymm3, ymm1, 0x03);	\
 							\
-	ymm4 += _mm256_loadu_pd(CO1 + (0 * LDC)/8);	\
-	ymm5 += _mm256_loadu_pd(CO1 + (1 * LDC)/8);	\
-	ymm6 += _mm256_loadu_pd(CO1 + (2 * LDC)/8);	\
-	ymm7 += _mm256_loadu_pd(CO1 + (3 * LDC)/8);	\
-	_mm256_storeu_pd(CO1 + (0 * LDC)/8, ymm4);	\
-	_mm256_storeu_pd(CO1 + (1 * LDC)/8, ymm5);	\
-	_mm256_storeu_pd(CO1 + (2 * LDC)/8, ymm6);	\
-	_mm256_storeu_pd(CO1 + (3 * LDC)/8, ymm7);	\
+	ymm4 += _mm256_loadu_pd(CO1 + (0 * ldc));	\
+	ymm5 += _mm256_loadu_pd(CO1 + (1 * ldc));	\
+	ymm6 += _mm256_loadu_pd(CO1 + (2 * ldc));	\
+	ymm7 += _mm256_loadu_pd(CO1 + (3 * ldc));	\
+	_mm256_storeu_pd(CO1 + (0 * ldc), ymm4);	\
+	_mm256_storeu_pd(CO1 + (1 * ldc), ymm5);	\
+	_mm256_storeu_pd(CO1 + (2 * ldc), ymm6);	\
+	_mm256_storeu_pd(CO1 + (3 * ldc), ymm7);	\
 							\
 	ymm9 = _mm256_permute4x64_pd(ymm9, 0xb1);		\
 	ymm11 = _mm256_permute4x64_pd(ymm11, 0xb1);		\
@@ -759,14 +759,14 @@ static void print_ymm(char *str, __m256d ymm)
 	ymm6 = _mm256_blend_pd_gnu(ymm2, ymm0, 0x03);	\
 	ymm7 = _mm256_blend_pd_gnu(ymm3, ymm1, 0x03);	\
 							\
-	ymm4 += _mm256_loadu_pd(CO1 + (4 * LDC)/8);	\
-	ymm5 += _mm256_loadu_pd(CO1 + (5 * LDC)/8);	\
-	ymm6 += _mm256_loadu_pd(CO1 + (6 * LDC)/8);	\
-	ymm7 += _mm256_loadu_pd(CO1 + (7 * LDC)/8);	\
-	_mm256_storeu_pd(CO1 + (4 * LDC)/8, ymm4);	\
-	_mm256_storeu_pd(CO1 + (5 * LDC)/8, ymm5);	\
-	_mm256_storeu_pd(CO1 + (6 * LDC)/8, ymm6);	\
-	_mm256_storeu_pd(CO1 + (7 * LDC)/8, ymm7);	\
+	ymm4 += _mm256_loadu_pd(CO1 + (4 * ldc));	\
+	ymm5 += _mm256_loadu_pd(CO1 + (5 * ldc));	\
+	ymm6 += _mm256_loadu_pd(CO1 + (6 * ldc));	\
+	ymm7 += _mm256_loadu_pd(CO1 + (7 * ldc));	\
+	_mm256_storeu_pd(CO1 + (4 * ldc), ymm4);	\
+	_mm256_storeu_pd(CO1 + (5 * ldc), ymm5);	\
+	_mm256_storeu_pd(CO1 + (6 * ldc), ymm6);	\
+	_mm256_storeu_pd(CO1 + (7 * ldc), ymm7);	\
 							\
 	CO1 += 4;
 
@@ -815,24 +815,24 @@ static void print_ymm(char *str, __m256d ymm)
 	xmm10 *= xmm0;					\
 	xmm11 *= xmm0;					\
 							\
-	xmm4 += _mm_loadu_pd(CO1 + (0 * LDC)/8);	\
-	xmm5 += _mm_loadu_pd(CO1 + (1 * LDC)/8);	\
-	xmm6 += _mm_loadu_pd(CO1 + (2 * LDC)/8);	\
-	xmm7 += _mm_loadu_pd(CO1 + (3 * LDC)/8);	\
+	xmm4 += _mm_loadu_pd(CO1 + (0 * ldc));	\
+	xmm5 += _mm_loadu_pd(CO1 + (1 * ldc));	\
+	xmm6 += _mm_loadu_pd(CO1 + (2 * ldc));	\
+	xmm7 += _mm_loadu_pd(CO1 + (3 * ldc));	\
 							\
-	_mm_storeu_pd(CO1 + (0 * LDC)/8, xmm4);		\
-	_mm_storeu_pd(CO1 + (1 * LDC)/8, xmm5);		\
-	_mm_storeu_pd(CO1 + (2 * LDC)/8, xmm6);		\
-	_mm_storeu_pd(CO1 + (3 * LDC)/8, xmm7);		\
+	_mm_storeu_pd(CO1 + (0 * ldc), xmm4);		\
+	_mm_storeu_pd(CO1 + (1 * ldc), xmm5);		\
+	_mm_storeu_pd(CO1 + (2 * ldc), xmm6);		\
+	_mm_storeu_pd(CO1 + (3 * ldc), xmm7);		\
 							\
-	xmm8 += _mm_loadu_pd(CO1 + (4 * LDC)/8);	\
-	xmm9 += _mm_loadu_pd(CO1 + (5 * LDC)/8);	\
-	xmm10+= _mm_loadu_pd(CO1 + (6 * LDC)/8);	\
-	xmm11+= _mm_loadu_pd(CO1 + (7 * LDC)/8);	\
-	_mm_storeu_pd(CO1 + (4 * LDC)/8, xmm8);		\
-	_mm_storeu_pd(CO1 + (5 * LDC)/8, xmm9);		\
-	_mm_storeu_pd(CO1 + (6 * LDC)/8, xmm10);	\
-	_mm_storeu_pd(CO1 + (7 * LDC)/8, xmm11);	\
+	xmm8 += _mm_loadu_pd(CO1 + (4 * ldc));	\
+	xmm9 += _mm_loadu_pd(CO1 + (5 * ldc));	\
+	xmm10+= _mm_loadu_pd(CO1 + (6 * ldc));	\
+	xmm11+= _mm_loadu_pd(CO1 + (7 * ldc));	\
+	_mm_storeu_pd(CO1 + (4 * ldc), xmm8);		\
+	_mm_storeu_pd(CO1 + (5 * ldc), xmm9);		\
+	_mm_storeu_pd(CO1 + (6 * ldc), xmm10);	\
+	_mm_storeu_pd(CO1 + (7 * ldc), xmm11);	\
 	CO1 += 2;
 
 
@@ -884,23 +884,23 @@ static void print_ymm(char *str, __m256d ymm)
 	dbl10 *= dbl0;				\
 	dbl11 *= dbl0;				\
 						\
-	dbl4 += *(CO1 + (0 * LDC)/8);		\
-	dbl5 += *(CO1 + (1 * LDC)/8);		\
-	dbl6 += *(CO1 + (2 * LDC)/8);		\
-	dbl7 += *(CO1 + (3 * LDC)/8);		\
-	*(CO1 + (0 * LDC)/8) = dbl4;		\
-	*(CO1 + (1 * LDC)/8) = dbl5;		\
-	*(CO1 + (2 * LDC)/8) = dbl6;		\
-	*(CO1 + (3 * LDC)/8) = dbl7;		\
+	dbl4 += *(CO1 + (0 * ldc));		\
+	dbl5 += *(CO1 + (1 * ldc));		\
+	dbl6 += *(CO1 + (2 * ldc));		\
+	dbl7 += *(CO1 + (3 * ldc));		\
+	*(CO1 + (0 * ldc)) = dbl4;		\
+	*(CO1 + (1 * ldc)) = dbl5;		\
+	*(CO1 + (2 * ldc)) = dbl6;		\
+	*(CO1 + (3 * ldc)) = dbl7;		\
 						\
-	dbl8  += *(CO1 + (4 * LDC)/8);		\
-	dbl9  += *(CO1 + (5 * LDC)/8);		\
-	dbl10 += *(CO1 + (6 * LDC)/8);		\
-	dbl11 += *(CO1 + (7 * LDC)/8);		\
-	*(CO1 + (4 * LDC)/8) = dbl8;		\
-	*(CO1 + (5 * LDC)/8) = dbl9;		\
-	*(CO1 + (6 * LDC)/8) = dbl10;		\
-	*(CO1 + (7 * LDC)/8) = dbl11;		\
+	dbl8  += *(CO1 + (4 * ldc));		\
+	dbl9  += *(CO1 + (5 * ldc));		\
+	dbl10 += *(CO1 + (6 * ldc));		\
+	dbl11 += *(CO1 + (7 * ldc));		\
+	*(CO1 + (4 * ldc)) = dbl8;		\
+	*(CO1 + (5 * ldc)) = dbl9;		\
+	*(CO1 + (6 * ldc)) = dbl10;		\
+	*(CO1 + (7 * ldc)) = dbl11;		\
 						\
 	CO1 += 1;
 
@@ -1034,14 +1034,14 @@ static void print_ymm(char *str, __m256d ymm)
 	ymm6 = _mm256_blend_pd(ymm0, ymm2, 0x03);	\
 	ymm7 = _mm256_blend_pd(ymm1, ymm3, 0x03);	\
 							\
-	ymm4 += _mm256_loadu_pd(CO1 + (0 * LDC)/8);	\
-	ymm5 += _mm256_loadu_pd(CO1 + (1 * LDC)/8);	\
-	ymm6 += _mm256_loadu_pd(CO1 + (2 * LDC)/8);	\
-	ymm7 += _mm256_loadu_pd(CO1 + (3 * LDC)/8);	\
-	_mm256_storeu_pd(CO1 + (0 * LDC)/8, ymm4);	\
-	_mm256_storeu_pd(CO1 + (1 * LDC)/8, ymm5);	\
-	_mm256_storeu_pd(CO1 + (2 * LDC)/8, ymm6);	\
-	_mm256_storeu_pd(CO1 + (3 * LDC)/8, ymm7);	\
+	ymm4 += _mm256_loadu_pd(CO1 + (0 * ldc));	\
+	ymm5 += _mm256_loadu_pd(CO1 + (1 * ldc));	\
+	ymm6 += _mm256_loadu_pd(CO1 + (2 * ldc));	\
+	ymm7 += _mm256_loadu_pd(CO1 + (3 * ldc));	\
+	_mm256_storeu_pd(CO1 + (0 * ldc), ymm4);	\
+	_mm256_storeu_pd(CO1 + (1 * ldc), ymm5);	\
+	_mm256_storeu_pd(CO1 + (2 * ldc), ymm6);	\
+	_mm256_storeu_pd(CO1 + (3 * ldc), ymm7);	\
 							\
 	CO1 += 4;
 
@@ -1079,15 +1079,15 @@ static void print_ymm(char *str, __m256d ymm)
 	xmm6 *= xmm0;					\
 	xmm7 *= xmm0;					\
 							\
-	xmm4 += _mm_loadu_pd(CO1 + (0 * LDC)/8);	\
-	xmm5 += _mm_loadu_pd(CO1 + (1 * LDC)/8);	\
-	xmm6 += _mm_loadu_pd(CO1 + (2 * LDC)/8);	\
-	xmm7 += _mm_loadu_pd(CO1 + (3 * LDC)/8);	\
+	xmm4 += _mm_loadu_pd(CO1 + (0 * ldc));	\
+	xmm5 += _mm_loadu_pd(CO1 + (1 * ldc));	\
+	xmm6 += _mm_loadu_pd(CO1 + (2 * ldc));	\
+	xmm7 += _mm_loadu_pd(CO1 + (3 * ldc));	\
 							\
-	_mm_storeu_pd(CO1 + (0 * LDC)/8, xmm4);		\
-	_mm_storeu_pd(CO1 + (1 * LDC)/8, xmm5);		\
-	_mm_storeu_pd(CO1 + (2 * LDC)/8, xmm6);		\
-	_mm_storeu_pd(CO1 + (3 * LDC)/8, xmm7);		\
+	_mm_storeu_pd(CO1 + (0 * ldc), xmm4);		\
+	_mm_storeu_pd(CO1 + (1 * ldc), xmm5);		\
+	_mm_storeu_pd(CO1 + (2 * ldc), xmm6);		\
+	_mm_storeu_pd(CO1 + (3 * ldc), xmm7);		\
 							\
 	CO1 += 2;
 
@@ -1122,14 +1122,14 @@ static void print_ymm(char *str, __m256d ymm)
 	dbl6 *= dbl0;				\
 	dbl7 *= dbl0;				\
 						\
-	dbl4 += *(CO1 + (0 * LDC)/8);		\
-	dbl5 += *(CO1 + (1 * LDC)/8);		\
-	dbl6 += *(CO1 + (2 * LDC)/8);		\
-	dbl7 += *(CO1 + (3 * LDC)/8);		\
-	*(CO1 + (0 * LDC)/8) = dbl4;		\
-	*(CO1 + (1 * LDC)/8) = dbl5;		\
-	*(CO1 + (2 * LDC)/8) = dbl6;		\
-	*(CO1 + (3 * LDC)/8) = dbl7;		\
+	dbl4 += *(CO1 + (0 * ldc));		\
+	dbl5 += *(CO1 + (1 * ldc));		\
+	dbl6 += *(CO1 + (2 * ldc));		\
+	dbl7 += *(CO1 + (3 * ldc));		\
+	*(CO1 + (0 * ldc)) = dbl4;		\
+	*(CO1 + (1 * ldc)) = dbl5;		\
+	*(CO1 + (2 * ldc)) = dbl6;		\
+	*(CO1 + (3 * ldc)) = dbl7;		\
 						\
 						\
 	CO1 += 1;
@@ -1168,13 +1168,13 @@ static void print_ymm(char *str, __m256d ymm)
 							\
 	xmm4 += _mm_loadu_pd(CO1);			\
 	xmm5 += _mm_loadu_pd(CO1 + 2);			\
-	xmm6 += _mm_loadu_pd(CO1 + (LDC)/8);		\
-	xmm7 += _mm_loadu_pd(CO1 + (LDC)/8 + 2);	\
+	xmm6 += _mm_loadu_pd(CO1 + (ldc));		\
+	xmm7 += _mm_loadu_pd(CO1 + (ldc) + 2);	\
 							\
 	_mm_storeu_pd(CO1, xmm4);			\
 	_mm_storeu_pd(CO1 + 2, xmm5);			\
-	_mm_storeu_pd(CO1 + LDC/8, xmm6);		\
-	_mm_storeu_pd(CO1 + LDC/8 + 2, xmm7);		\
+	_mm_storeu_pd(CO1 + ldc, xmm6);		\
+	_mm_storeu_pd(CO1 + ldc + 2, xmm7);		\
 							\
 	CO1 += 4;
 
@@ -1199,15 +1199,17 @@ static void print_ymm(char *str, __m256d ymm)
 
 
 #define  SAVE2x2(ALPHA)					\
-	xmm0 = _mm_set1_pd(ALPHA);			\
-	xmm4 *= xmm0;					\
-	xmm6 *= xmm0;					\
+	if (ALPHA != 1.0) {				\
+		xmm0 = _mm_set1_pd(ALPHA);		\
+		xmm4 *= xmm0;				\
+		xmm6 *= xmm0;				\
+	}						\
 							\
 	xmm4 += _mm_loadu_pd(CO1);			\
-	xmm6 += _mm_loadu_pd(CO1 + (LDC)/8);		\
+	xmm6 += _mm_loadu_pd(CO1 + ldc);		\
 							\
 	_mm_storeu_pd(CO1, xmm4);			\
-	_mm_storeu_pd(CO1 + LDC/8, xmm6);		\
+	_mm_storeu_pd(CO1 + ldc, xmm6);			\
 							\
 	CO1 += 2;
 
@@ -1235,10 +1237,10 @@ static void print_ymm(char *str, __m256d ymm)
 	dbl4 *= dbl0;				\
 	dbl5 *= dbl0;				\
 						\
-	dbl4 += *(CO1 + (0 * LDC)/8);		\
-	dbl5 += *(CO1 + (1 * LDC)/8);		\
-	*(CO1 + (0 * LDC)/8) = dbl4;		\
-	*(CO1 + (1 * LDC)/8) = dbl5;		\
+	dbl4 += *(CO1 + (0 * ldc));		\
+	dbl5 += *(CO1 + (1 * ldc));		\
+	*(CO1 + (0 * ldc)) = dbl4;		\
+	*(CO1 + (1 * ldc)) = dbl5;		\
 						\
 						\
 	CO1 += 1;
@@ -1360,7 +1362,6 @@ int __attribute__ ((noinline))
 dgemm_kernel(BLASLONG m, BLASLONG n, BLASLONG k, double alpha, double *A, double *B, double *C, BLASLONG ldc)
 {
 	unsigned long OLD_M = m, OLD_N =m , OLD_K = k;
-	unsigned long LDC = ldc * sizeof(double);
 
 	unsigned long M=m, N=n, K=k;
 
@@ -1379,6 +1380,9 @@ dgemm_kernel(BLASLONG m, BLASLONG n, BLASLONG k, double alpha, double *A, double
 
 	Ndiv24 = N / 24;
 	Nmod24 = N % 24;
+
+	Ndiv24 = 0;
+	Nmod24 = N;
 
 	J = Ndiv24;
 
@@ -1421,27 +1425,21 @@ dgemm_kernel(BLASLONG m, BLASLONG n, BLASLONG k, double alpha, double *A, double
 
 		while (i > 0) {
 			// L12_11
-			__m256d ymm0, ymm1, ymm2, ymm3;
-			__m256d ymm4, ymm5, ymm6, ymm7, ymm8, ymm9, ymm10, ymm11, ymm12, ymm13, ymm14, ymm15;
-			int Kdiv8 = K / 8;
-			int Kmod8 = K & 7;
+			int kloop = K;
 			BO = BUFFER1;
 			BO += 12;
-	
-			if (Kdiv8 >=2) {
+#if 0	
+			if (kloop >= 8) {
+				__m256d ymm4, ymm5, ymm6, ymm7, ymm8, ymm9, ymm10, ymm11, ymm12, ymm13, ymm14, ymm15;
+				__m256d ymm0, ymm1, ymm2, ymm3;
 			
 				KERNEL4x12_I()
 				KERNEL4x12_M2()
 				KERNEL4x12_M1()
 				KERNEL4x12_M2()
 
-				KERNEL4x12_M1()
-				KERNEL4x12_M2()
-				KERNEL4x12_M1()
-				KERNEL4x12_M2()
-
-				Kdiv8 -= 2;
-				while (Kdiv8 > 0) {
+				kloop -= 8;  /* Count both the preamble and postamble */
+				while (kloop >= 8) {
 					//L12_12
 					KERNEL4x12_M1()
 					KERNEL4x12_M2()
@@ -1452,44 +1450,39 @@ dgemm_kernel(BLASLONG m, BLASLONG n, BLASLONG k, double alpha, double *A, double
 					KERNEL4x12_M2()
 					KERNEL4x12_M1()
 					KERNEL4x12_M2()
-					Kdiv8--;
+					kloop -= 8;
 				}
-				// L12_12a
-				KERNEL4x12_M1()
-				KERNEL4x12_M2()
-				KERNEL4x12_M1()
-				KERNEL4x12_M2()
 
 				KERNEL4x12_M1()
 				KERNEL4x12_M2()
 				KERNEL4x12_M1()
 				KERNEL4x12_E()
-				
-			} else {
-				// L12_13
-				if (Kdiv8 == 1) {
-					KERNEL4x12_I()
-					KERNEL4x12_M2()
-					KERNEL4x12_M1()
-					KERNEL4x12_M2()
 
-					KERNEL4x12_M1()
-					KERNEL4x12_M2()
-					KERNEL4x12_M1()
-					KERNEL4x12_E()
-				} else {
-					// L12_14
-					INIT4x12()
+				/* Sweep up any remaining lines */
+				while (kloop > 0) {
+					// L12_17
+					KERNEL4x12_SUB()
+					kloop--;
+				}
+				SAVE4x12(alpha)
+				
+			} else
+#endif
+			{
+				__m256d ymm4, ymm5, ymm6, ymm7, ymm8, ymm9, ymm10, ymm11, ymm12, ymm13, ymm14, ymm15;
+				// L12_13
+				INIT4x12()
+				while (kloop > 0) {
+					__m256d ymm0, ymm1, ymm2, ymm3;
+					// L12_17
+					KERNEL4x12_SUB()
+					kloop--;
+				}
+				{
+					__m256d ymm0, ymm1, ymm2, ymm3;
+					SAVE4x12(alpha)
 				}
 			}	
-			// L12_16
-			while (Kmod8 > 0) {
-				// L12_17
-				KERNEL4x12_SUB()
-				Kmod8--;
-			}
-			// L12_19
-			SAVE4x12(alpha)
 
 			i--;
 
@@ -1592,27 +1585,21 @@ dgemm_kernel(BLASLONG m, BLASLONG n, BLASLONG k, double alpha, double *A, double
 		i = m /4;
 
 		while (i > 0) {
-			__m256d ymm0, ymm1, ymm2, ymm3, ymm4, ymm5, ymm6, ymm7, ymm8, ymm9, ymm10, ymm11, ymm12, ymm13, ymm14, ymm15;
 			// L13_11
-			int Kdiv8 = K / 8;
-			int Kmod8 = K & 7;
+			int kloop = K;
 			BO = BUFFER1;
 			BO += 12;
-	
-			if (Kdiv8 >=2) {
-			
+#if 0	
+			if (kloop >=8) {
+				__m256d ymm4, ymm5, ymm6, ymm7, ymm8, ymm9, ymm10, ymm11, ymm12, ymm13, ymm14, ymm15;
+				__m256d ymm0, ymm1, ymm2, ymm3;
 				KERNEL4x12_I()
 				KERNEL4x12_M2()
 				KERNEL4x12_M1()
 				KERNEL4x12_M2()
 
-				KERNEL4x12_M1()
-				KERNEL4x12_M2()
-				KERNEL4x12_M1()
-				KERNEL4x12_M2()
-
-				Kdiv8 -= 2;
-				while (Kdiv8 > 0) {
+				kloop -= 8;
+				while (kloop >= 8) {
 					//L13_12
 					KERNEL4x12_M1()
 					KERNEL4x12_M2()
@@ -1623,44 +1610,40 @@ dgemm_kernel(BLASLONG m, BLASLONG n, BLASLONG k, double alpha, double *A, double
 					KERNEL4x12_M2()
 					KERNEL4x12_M1()
 					KERNEL4x12_M2()
-					Kdiv8--;
+					kloop -= 8;
 				}
 				// L13_12a
-				KERNEL4x12_M1()
-				KERNEL4x12_M2()
-				KERNEL4x12_M1()
-				KERNEL4x12_M2()
 
 				KERNEL4x12_M1()
 				KERNEL4x12_M2()
 				KERNEL4x12_M1()
 				KERNEL4x12_E()
-				
-			} else {
-				// L13_13
-				if (Kdiv8 == 1) {
-					KERNEL4x12_I()
-					KERNEL4x12_M2()
-					KERNEL4x12_M1()
-					KERNEL4x12_M2()
 
-					KERNEL4x12_M1()
-					KERNEL4x12_M2()
-					KERNEL4x12_M1()
-					KERNEL4x12_E()
-				} else {
-					// L12_14
-					INIT4x12()
+				while (kloop > 0) {
+					__m256d ymm0, ymm1, ymm2, ymm3;
+					// L12_17
+					KERNEL4x12_SUB()
+					kloop--;
+				}
+				
+				SAVE4x12(alpha)
+			} else 
+#endif
+			{
+				__m256d ymm4, ymm5, ymm6, ymm7, ymm8, ymm9, ymm10, ymm11, ymm12, ymm13, ymm14, ymm15;
+				INIT4x12()
+				while (kloop > 0) {
+					__m256d ymm0, ymm1, ymm2, ymm3;
+					// L12_17
+					KERNEL4x12_SUB()
+					kloop--;
+				}
+				{
+					__m256d ymm0, ymm1, ymm2, ymm3;
+					SAVE4x12(alpha)
 				}
 			}	
 			// L12_16
-			while (Kmod8 > 0) {
-				// L12_17
-				KERNEL4x12_SUB()
-				Kmod8--;
-			}
-			// L12_19
-			SAVE4x12(alpha)
 
 			i--;
 			
@@ -1755,23 +1738,17 @@ dgemm_kernel(BLASLONG m, BLASLONG n, BLASLONG k, double alpha, double *A, double
 				__m256d ymm0, ymm1, ymm2, ymm3, ymm4, ymm5, ymm6, ymm7, ymm8, ymm9, ymm10, ymm11;
 				// L8_11
 				BO = B + 12;
-				int Kdiv8 = K / 8;
-				int Kmod8 = K & 7;
-	
-				if (Kdiv8 >=2) {
+				int kloop = K;
+#if 1
+				if (kloop >= 8) {
 			
 					KERNEL4x8_I()
 					KERNEL4x8_M2()
 					KERNEL4x8_M1()
 					KERNEL4x8_M2()
 	
-					KERNEL4x8_M1()
-					KERNEL4x8_M2()
-					KERNEL4x8_M1()
-					KERNEL4x8_M2()
-
-					Kdiv8 -= 2;
-					while (Kdiv8 > 0) {
+					kloop -= 8;
+					while (kloop >= 8) {
 						//L8_12
 						KERNEL4x8_M1()
 						KERNEL4x8_M2()
@@ -1782,45 +1759,35 @@ dgemm_kernel(BLASLONG m, BLASLONG n, BLASLONG k, double alpha, double *A, double
 						KERNEL4x8_M2()
 						KERNEL4x8_M1()
 						KERNEL4x8_M2()
-						Kdiv8--;
+						kloop -= 8;
 					}
 					// L8_12a
-					KERNEL4x8_M1()
-					KERNEL4x8_M2()
-					KERNEL4x8_M1()
-					KERNEL4x8_M2()
 	
 					KERNEL4x8_M1()
 					KERNEL4x8_M2()
 					KERNEL4x8_M1()
 					KERNEL4x8_E()
 					
-				} else {
-					// L8_13
-					if (Kdiv8 == 1) {
-						KERNEL4x8_I()
-						KERNEL4x8_M2()
-						KERNEL4x8_M1()
-						KERNEL4x8_M2()
-	
-						KERNEL4x8_M1()
-						KERNEL4x8_M2()
-						KERNEL4x8_M1()
-						KERNEL4x8_E()
-					} else {
-						// L8_14
-						INIT4x8()
+					while (kloop > 0) {
+						// L12_17
+						KERNEL4x8_SUB()
+						kloop--;
 					}
+					SAVE4x8(alpha)
+	
+				} else 
+#endif
+				{
+					INIT4x8()
+					while (kloop > 0) {
+						// L12_17
+						KERNEL4x8_SUB()
+						kloop--;
+					}
+					SAVE4x8(alpha)
 				}	
 				// L8_16
-				while (Kmod8 > 0) {
-					// L12_17
-					KERNEL4x8_SUB()
-					Kmod8--;
-				}
 				// L8_19
-				SAVE4x8(alpha)
-	
 				i--;
 			}
 
